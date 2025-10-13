@@ -5,7 +5,7 @@ import Layout from '../components/Layout'
 function Login() {
   return (
     <Layout>
-      HALO
+      <p className='font-bold text-xl'>Irányítópult</p>
     </Layout>
   )
 }
