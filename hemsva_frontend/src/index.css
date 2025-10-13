@@ -5,6 +5,8 @@
   --color-lightgray: #efefef;
   --color-hemsred: #ff5659;
   --color-darkgray: #999B9B;
+  --color-darkest: #7D7F85;
+  --color-lightest: #FAFAFC;
 }
 
 * {
