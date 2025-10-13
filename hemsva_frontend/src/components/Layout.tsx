@@ -16,7 +16,7 @@ function Layout({ navbar = true, children }: LayoutProps) {
         <Header />
         <div className="flex flex-1">
           {navbar && <Nav />}
-          <main className="flex-1 py-3 px-5">{children}</main>
+          <main className="relative flex-1 py-3 px-5 bg-lightest">{children}</main>
         </div>
       </div>
     </>

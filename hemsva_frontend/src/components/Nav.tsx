@@ -99,7 +99,7 @@ function Nav() {
         {sections.map((section, sIdx) => (
           <div key={section.title}>
             <span className="text-darkgray font-bold">{section.title}</span>
-            {section.items.map((item) => {
+            {section.items.map(item => {
               const globalIdx = allItems.findIndex(i => i.key === item.key);
               return (
                 <div

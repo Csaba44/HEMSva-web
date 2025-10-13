@@ -4,13 +4,23 @@
 @theme {
   --color-lightgray: #efefef;
   --color-hemsred: #ff5659;
-  --color-darkgray: #999B9B;
-  --color-darkest: #7D7F85;
-  --color-lightest: #FAFAFC;
+  --color-darkgray: #999b9b;
+  --color-darkest: #7d7f85;
+  --color-lightest: #fafafc;
+}
+
+@layer components {
+  .h1 {
+    @apply text-3xl font-bold text-black;
+  }
 }
 
 * {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
+}
+
+.maplibregl-popup-close-button {
+  display: none;
 }
