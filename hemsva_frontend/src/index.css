@@ -24,3 +24,7 @@
 .maplibregl-popup-close-button {
   display: none;
 }
+
+body {
+  overflow: hidden;
+}

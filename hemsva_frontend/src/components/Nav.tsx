@@ -13,6 +13,7 @@ function Nav() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [transitionEnabled, setTransitionEnabled] = useState(false);
 
   const isDispatcher = true;
   const isAdmin = true;
@@ -80,14 +81,16 @@ function Nav() {
     }
   }, [indicatorIndex]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setTransitionEnabled(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div
-      className="relative h-full border-r-2 border-lightgray px-5 py-3 min-w-[16%] overflow-hidden"
-      onMouseLeave={() => setHoverIndex(null)} // <-- CSAK ITT KEZELJÜK A KILÉPÉST!
-    >
+    <div className="relative h-full border-r-2 border-lightgray px-5 py-3 min-w-[16%] overflow-hidden" onMouseLeave={() => setHoverIndex(null)}>
       {/* animated background */}
       <div
-        className="absolute left-5 w-68 mt-[17px] bg-lightgray rounded-md transition-all duration-300 ease-in-out z-0"
+        className={`absolute left-5 w-68 mt-[17px] bg-lightgray rounded-md z-0 ${transitionEnabled ? "transition-all duration-300 ease-in-out" : ""}`}
         style={{
           top: indicatorStyle.top,
           height: indicatorStyle.height - 10,

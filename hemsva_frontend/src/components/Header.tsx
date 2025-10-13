@@ -1,4 +1,3 @@
-import React from "react";
 import Widget from "./Widget";
 import hemslogo from "../assets/hemslogo.png";
 
@@ -9,7 +8,7 @@ function Header() {
   };
 
   return (
-    <Widget className="w-screen py-4 grid grid-cols-2 pl-3 rounded-none border-l-0 border-t-0 border-r-0">
+    <Widget className="w-screen py-4 grid grid-cols-2 pl-3 rounded-none border-l-0 border-t-0 border-r-0" interactive={false}>
       <div className="flex items-center gap-7">
         <img src={hemslogo} alt="HEMS Logo" /> <p className="text-hemsred text-2xl font-bold">HEMS Hungary Virtual</p>
       </div>

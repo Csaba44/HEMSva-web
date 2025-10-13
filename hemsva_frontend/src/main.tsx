@@ -4,6 +4,8 @@ import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router";
 import Dashboard from "./pages/Dashboard.tsx";
 import Login from "./pages/Login.tsx";
+import Stats from "./pages/Stats.tsx";
+import Home from "./pages/Home.tsx";
 
 const Placeholder = ({ name }: { name: string }) => <div className="flex items-center justify-center h-screen text-2xl font-semibold">{name}</div>;
 
@@ -11,12 +13,12 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
         {/* PROFILE */}
-        <Route path="/dashboard" element={<Placeholder name="Dashboard" />} />
-        <Route path="/stats" element={<Placeholder name="Stats" />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/stats" element={<Stats />} />
         <Route path="/flights" element={<Placeholder name="Flights" />} />
 
         {/* FLIGHT */}
