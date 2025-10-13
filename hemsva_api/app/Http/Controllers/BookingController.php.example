@@ -1,0 +1,241 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Booking;
+use App\Models\TransportFlight;
+use Illuminate\Http\JsonResponse;
+
+class BookingController extends Controller
+{
+    /**
+     * Összes foglalás lekérése
+     */
+    public function index(): JsonResponse
+    {
+        try {
+            $bookings = Booking::with([
+                'user:id,name,email',
+                'aircraft:id,registration,type_designator',
+                'handledByUser:id,name',
+                'flight', // morph kapcsolat — automatikusan betölti a megfelelőt
+            ])->get();
+
+            if ($bookings->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Nincsenek foglalások',
+                    'data' => [],
+                ]);
+            }
+
+            $formattedBookings = $bookings->map(function ($booking) {
+                return [
+                    'id' => $booking->id,
+                    'user' => [
+                        'id' => $booking->user->id,
+                        'name' => $booking->user->name,
+                        'email' => $booking->user->email,
+                    ],
+                    'flight_type' => $booking->flight_type,
+                    'flight_id' => $booking->flight_id,
+                    'flight' => $booking->flight ? [
+                        'id' => $booking->flight->id,
+                        'type' => $booking->flight_type,
+                        'details' => $booking->flight->toArray(),
+                    ] : null,
+
+                    'aircraft' => $booking->aircraft ? [
+                        'id' => $booking->aircraft->id,
+                        'registration' => $booking->aircraft->registration,
+                        'type_designator' => $booking->aircraft->type_designator,
+                    ] : null,
+                    'completion_status' => $booking->completion_status,
+                    'approval_status' => $booking->approval_status,
+                    'handled_by' => $booking->handledByUser ? [
+                        'id' => $booking->handledByUser->id,
+                        'name' => $booking->handledByUser->name,
+                    ] : null,
+                    'start_time' => $booking->start_time,
+                    'end_time' => $booking->end_time,
+                    'created_at' => $booking->created_at,
+                    'updated_at' => $booking->updated_at,
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Foglalások sikeresen lekérve',
+                'count' => $bookings->count(),
+                'data' => $formattedBookings,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hiba történt a foglalások lekérése során',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Egy adott foglalás lekérése ID alapján
+     */
+    public function show($id): JsonResponse
+    {
+        try {
+            $booking = Booking::with([
+                'user:id,name,email',
+                'aircraft:id,registration,type_designator,base_id',
+                'handledByUser:id,name',
+                // Flight adatok a típus alapján
+            ])->find($id);
+
+            if (! $booking) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'A foglalás nem található',
+                ], 404);
+            }
+
+            // Flight adatok lekérése a típus alapján
+            $flightData = $this->getFlightDetails($booking->flight_type, $booking->flight_id);
+
+            $formattedBooking = [
+                'id' => $booking->id,
+                'user' => [
+                    'id' => $booking->user->id,
+                    'name' => $booking->user->name,
+                    'email' => $booking->user->email,
+                ],
+                'flight_type' => $booking->flight_type,
+                'flight_details' => $flightData,
+                'aircraft' => $booking->aircraft ? [
+                    'id' => $booking->aircraft->id,
+                    'registration' => $booking->aircraft->registration,
+                    'type_designator' => $booking->aircraft->type_designator,
+                    'base_id' => $booking->aircraft->base_id,
+                ] : null,
+                'completion_status' => $booking->completion_status,
+                'approval_status' => $booking->approval_status,
+                'handled_by' => $booking->handledByUser ? [
+                    'id' => $booking->handledByUser->id,
+                    'name' => $booking->handledByUser->name,
+                ] : null,
+                'start_time' => $booking->start_time,
+                'end_time' => $booking->end_time,
+                'created_at' => $booking->created_at,
+                'updated_at' => $booking->updated_at,
+            ];
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Foglalás sikeresen lekérve',
+                'data' => $formattedBooking,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hiba történt a foglalás lekérése során',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Flight adatok lekérése a típus alapján
+     */
+    private function getFlightDetails($flightType, $flightId)
+    {
+        if (! $flightId) {
+            return null;
+        }
+
+        switch ($flightType) {
+            case 'transport_flight':
+                $flight = TransportFlight::with(['base', 'fromHospital', 'toHospital'])
+                    ->find($flightId);
+                if ($flight) {
+                    return [
+                        'type' => 'transport_flight',
+                        'base' => $flight->base->name ?? null,
+                        'from_hospital' => $flight->fromHospital->name ?? null,
+                        'to_hospital' => $flight->toHospital->name ?? null,
+                        'description' => $flight->description,
+                        'reward_points' => $flight->reward_points,
+                    ];
+                }
+                break;
+
+            case 'mission':
+                $flight = \App\Models\Mission::with(['base', 'toHospital'])
+                    ->find($flightId);
+                if ($flight) {
+                    return [
+                        'type' => 'mission',
+                        'base' => $flight->base->name ?? null,
+                        'latitude' => $flight->latitude,
+                        'longitude' => $flight->longitude,
+                        'to_hospital' => $flight->toHospital->name ?? null,
+                        'description' => $flight->description,
+                        'reward_points' => $flight->reward_points,
+                    ];
+                }
+                break;
+
+            case 'repositioning':
+                $flight = \App\Models\Repositioning::with(['fromBase', 'toBase'])
+                    ->find($flightId);
+                if ($flight) {
+                    return [
+                        'type' => 'repositioning',
+                        'from_base' => $flight->fromBase->name ?? null,
+                        'to_base' => $flight->toBase->name ?? null,
+                        'description' => $flight->description,
+                        'reward_points' => $flight->reward_points,
+                    ];
+                }
+                break;
+        }
+
+        return null;
+    }
+
+    /**
+     * Foglalások szűrése státusz alapján
+     */
+    public function filterByStatus($status): JsonResponse
+    {
+        try {
+            $validStatuses = ['booked', 'ongoing', 'completed', 'cancelled'];
+
+            if (! in_array($status, $validStatuses)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Érvénytelen státusz',
+                ], 400);
+            }
+
+            $bookings = Booking::with([
+                'user:id,name,email',
+                'aircraft:id,registration,type_designator',
+                'handledByUser:id,name',
+            ])->where('completion_status', $status)->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => "{$status} státuszú foglalások",
+                'count' => $bookings->count(),
+                'data' => $bookings,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hiba történt a szűrés során',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+}
