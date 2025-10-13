@@ -1,101 +1,94 @@
-type NavProps = {
-  active?: string;
+import { Link, useLocation } from "react-router";
+import { useState, useEffect, useRef } from "react";
+
+type NavItem = {
+  path: string;
+  name: string;
+  icon: string;
+  key: string;
 };
 
-function Nav({ active = "dashboard" }: NavProps) {
-  const baseItem = "flex items-center gap-2 mt-2 px-2 py-1 rounded-md cursor-pointer transition";
-  const activeStyle = "bg-lightgray font-medium";
+function Nav() {
+  const location = useLocation();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const isDispatcher = true;
   const isAdmin = true;
 
+  const items: NavItem[] = [
+    { path: "/dashboard", name: "Irányítópult", icon: "fa-solid fa-grip text-black", key: "dashboard" },
+    { path: "/stats", name: "Statisztikáim", icon: "fa-solid fa-chart-waterfall text-black", key: "stats" },
+    { path: "/flights", name: "Legutóbbi repüléseim", icon: "fa-regular fa-helicopter-symbol text-black", key: "flights" },
+    { path: "/repositioning", name: "Repositioning", icon: "fa-light fa-map-pin text-black", key: "repositioning" },
+    { path: "/documents", name: "Dokumentumok", icon: "fa-light fa-book text-black", key: "documents" },
+    { path: "/announcements", name: "Közlemények", icon: "fa-light fa-bullhorn text-black", key: "announcements" },
+    ...(isDispatcher ? [{ path: "/new-dispatch", name: "Új riasztás", icon: "fa-light fa-light-emergency-on text-black", key: "new-dispatch" }] : []),
+    ...(isAdmin
+      ? [
+          { path: "/manage-aircraft", name: "Légijárművek kezelése", icon: "fa-light fa-helicopter text-black", key: "manage-aircraft" },
+          { path: "/manage-missions", name: "Hívások kezelése", icon: "fa-light fa-bell text-black", key: "manage-missions" },
+          {
+            path: "/manage-repositioning",
+            name: "Repositioning kezelése",
+            icon: "fa-light fa-location-arrow text-black",
+            key: "manage-repositioning",
+          },
+          { path: "/manage-bases", name: "Bázisok kezelése", icon: "fa-light fa-helicopter-symbol text-black", key: "manage-bases" },
+          { path: "/manage-users", name: "Felhasználók kezelése", icon: "fa-light fa-user-pen text-black", key: "manage-users" },
+          { path: "/manage-pireps", name: "Leadott repülések kezelése", icon: "fa-light fa-plane-circle-check text-black", key: "manage-pireps" },
+        ]
+      : []),
+  ];
+
+  useEffect(() => {
+    const idx = items.findIndex(item => location.pathname.includes(item.path));
+    if (idx >= 0) setActiveIndex(idx);
+  }, [location.pathname]);
+
+  const indicatorIndex = hoverIndex !== null ? hoverIndex : activeIndex;
+
+  const [indicatorStyle, setIndicatorStyle] = useState<{
+    top: number;
+    height: number;
+  }>({ top: 0, height: 0 });
+
+  useEffect(() => {
+    const el = itemRefs.current[indicatorIndex];
+    if (el) {
+      const { offsetTop, offsetHeight } = el;
+      setIndicatorStyle({ top: offsetTop, height: offsetHeight });
+    }
+  }, [indicatorIndex]);
+
   return (
-    <div className="h-full border-r-2 border-lightgray px-5 py-3 min-w-[16%]">
-      <div>
-        <span className="text-darkgray font-bold">PROFIL</span>
+    <div className="relative h-full border-r-2 border-lightgray px-5 py-3 min-w-[16%] overflow-hidden">
+      <div
+        className="absolute left-5 w-68 mt-[19px] bg-lightgray rounded-md transition-all duration-300 ease-in-out z-0"
+        style={{
+          top: indicatorStyle.top,
+          height: indicatorStyle.height - 5,
+        }}
+      ></div>
 
-        <div className={`${baseItem} ${active === "dashboard" ? activeStyle : "hover:bg-gray-50"}`}>
-          <i className="fa-solid fa-light fa-grip text-black"></i>
-          <p>Irányítópult</p>
-        </div>
-
-        <div className={`${baseItem} ${active === "stats" ? activeStyle : "hover:bg-gray-50"}`}>
-          <i className="fa-solid fa-light fa-chart-waterfall text-black"></i>
-          <p>Statisztikáim</p>
-        </div>
-
-        <div className={`${baseItem} ${active === "flights" ? activeStyle : "hover:bg-gray-50"}`}>
-          <i className="fa-regular fa-light fa-helicopter-symbol text-black"></i>
-          <p>Legutóbbi repüléseim</p>
-        </div>
-      </div>
-
-      <div className="h-[2px] bg-lightgray my-5 -mx-5"></div>
-
-      <div className="my-5">
-        <span className="text-darkgray font-bold">REPÜLÉS</span>
-
-        <div className={`${baseItem} ${active === "repositioning" ? activeStyle : "hover:bg-gray-50"}`}>
-          <i className="fa-light fa-map-pin text-black"></i>
-          <p>Repositioning</p>
-        </div>
-      </div>
-
-      <div className="h-[2px] bg-lightgray my-5 -mx-5"></div>
-
-      <div className="my-5">
-        <span className="text-darkgray font-bold">OPS</span>
-
-        <div className={`${baseItem} ${active === "documents" ? activeStyle : "hover:bg-gray-50"}`}>
-          <i className="fa-classic fa-light fa-book text-black"></i>
-          <p>Dokumentumok</p>
-        </div>
-        <div className={`${baseItem} ${active === "announcements" ? activeStyle : "hover:bg-gray-50"}`}>
-          <i className="fa-classic fa-light fa-bullhorn text-black"></i>
-          <p>Közlemények</p>
-        </div>
-        {isDispatcher && (
-          <div className={`${baseItem} ${active === "new-dispatch" ? activeStyle : "hover:bg-gray-50"}`}>
-            <i className="fa-classic fa-light fa-light-emergency-on text-black"></i>
-            <p>Új riasztás</p>
+      <div className="flex flex-col relative z-10">
+        {items.map((item, idx) => (
+          <div
+            key={item.key}
+            ref={el => {
+              itemRefs.current[idx] = el;
+            }}
+            onMouseEnter={() => setHoverIndex(idx)}
+            onMouseLeave={() => setHoverIndex(null)}
+          >
+            <Link to={item.path} className="flex items-center gap-2 mt-2 px-2 py-1 rounded-md cursor-pointer transition">
+              <i className={item.icon}></i>
+              <p>{item.name}</p>
+            </Link>
           </div>
-        )}
+        ))}
       </div>
-
-      {isAdmin && (
-        <>
-          <div className="h-[2px] bg-lightgray my-5 -mx-5"></div>
-
-          <div className="my-5">
-            <span className="text-darkgray font-bold">ADMIN</span>
-
-            <div className={`${baseItem} ${active === "manage-aircraft" ? activeStyle : "hover:bg-gray-50"}`}>
-              <i className="fa-classic fa-light fa-helicopter text-black"></i>
-              <p>Légijárművek kezelése</p>
-            </div>
-            <div className={`${baseItem} ${active === "manage-missions" ? activeStyle : "hover:bg-gray-50"}`}>
-              <i className="fa-classic fa-light fa-bell text-black"></i>
-              <p>Hívások kezelése</p>
-            </div>
-            <div className={`${baseItem} ${active === "manage-repositioning" ? activeStyle : "hover:bg-gray-50"}`}>
-              <i className="fa-classic fa-light fa-location-arrow text-black"></i>
-              <p>Repositioning kezelése</p>
-            </div>
-            <div className={`${baseItem} ${active === "manage-bases" ? activeStyle : "hover:bg-gray-50"}`}>
-              <i className="fa-classic fa-light fa-helicopter-symbol text-black"></i>
-              <p>Bázisok kezelése</p>
-            </div>
-            <div className={`${baseItem} ${active === "manage-users" ? activeStyle : "hover:bg-gray-50"}`}>
-              <i className="fa-classic fa-light fa-user-pen text-black"></i>
-              <p>Felhasználók kezelése</p>
-            </div>
-            <div className={`${baseItem} ${active === "manage-pireps" ? activeStyle : "hover:bg-gray-50"}`}>
-              <i className="fa-classic fa-light fa-plane-circle-check text-black"></i>
-              <p>Leadott repülések kezelése</p>
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 }

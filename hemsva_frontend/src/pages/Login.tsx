@@ -1,4 +1,3 @@
-import React from "react";
 import Widget from "../components/Widget";
 import Layout from "../components/Layout";
 import TextInput from "../components/TextInput";
@@ -19,7 +18,7 @@ function Login() {
   } = useForm<LoginFormInputs>();
 
   const logInUser = async () => {
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string>((resolve) => {
       setTimeout(() => {
         return resolve("logged in");
       }, 1000);

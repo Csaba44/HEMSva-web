@@ -9,7 +9,7 @@ type WidgetProps = {
 
 function Widget({ className = "", iconClass = null, title = null, children }: WidgetProps) {
   return (
-    <div className={`border border-2 p-5 rounded-[18px] border-lightgray flex w-min h-min flex-col gap-2 ${className}`}>
+    <div className={`border-2 p-5 rounded-[18px] border-lightgray flex w-min h-min flex-col gap-2 ${className}`}>
       {iconClass && title && (
         <div className="flex items-center gap-3">
           <span className="bg-lightgray py-1 px-2">
