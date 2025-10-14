@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceDot, ResponsiveContainer, Label } from "recharts";
 import type { Waypoint } from "../../types/Flight";
 import { calculateDistanceNM } from "../../utils/calculateDistance";
