@@ -14,9 +14,9 @@ function Layout({ navbar = true, children }: LayoutProps) {
       <Toaster />
       <div className="flex flex-col h-screen">
         <Header />
-        <div className="flex flex-1">
+        <div className="flex flex-1 min-h-0">
           {navbar && <Nav />}
-          <main className="relative flex-1 py-3 px-5 bg-lightest">{children}</main>
+          <main className="relative flex-1 h-full overflow-auto py-3 px-5 bg-lightest">{children}</main>
         </div>
       </div>
     </>

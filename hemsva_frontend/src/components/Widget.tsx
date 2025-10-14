@@ -6,9 +6,19 @@ type WidgetProps = {
   title?: null | string;
   children: React.ReactNode;
   interactive?: boolean;
+  onClickHeader?: () => void;
+  flightTagHeader?: React.ReactNode;
 };
 
-function Widget({ className = "", iconClass = null, title = null, children, interactive = true }: WidgetProps) {
+function Widget({
+  className = "",
+  iconClass = null,
+  title = null,
+  children,
+  interactive = true,
+  onClickHeader,
+  flightTagHeader = <></>,
+}: WidgetProps) {
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -35,11 +45,14 @@ function Widget({ className = "", iconClass = null, title = null, children, inte
       style={style}
     >
       {iconClass && title && (
-        <div className="flex items-center gap-3">
-          <span className="bg-lightgray py-1 px-2 rounded-[5px] transition-all duration-300 hover:bg-gray-300">
-            <i className={`text-darkgray ${iconClass}`}></i>
-          </span>
-          <span className="text-lg font-medium text-darkgray">{title}</span>
+        <div className="grid grid-cols-2" onClick={onClickHeader}>
+          <div className="flex items-center gap-3">
+            <span className="bg-lightgray py-1 px-2 rounded-[5px] transition-all duration-300 hover:bg-gray-300">
+              <i className={`text-darkgray ${iconClass}`}></i>
+            </span>
+            <span className="text-lg font-medium text-darkgray">{title}</span>
+          </div>
+          <div className="w-full flex justify-end">{flightTagHeader}</div>
         </div>
       )}
       {children}

@@ -28,3 +28,33 @@
 body {
   overflow: hidden;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-lightgray);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-darkgray), var(--color-darkest));
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(125, 127, 133, 0.3);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-darkest), var(--color-darkgray));
+  box-shadow: 0 0 8px var(--color-hemsred);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-darkgray) var(--color-lightgray);
+}
+
+html {
+  scroll-behavior: smooth;
+}
