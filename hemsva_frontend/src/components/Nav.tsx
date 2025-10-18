@@ -34,7 +34,8 @@ function Nav() {
     {
       title: "OPS",
       items: [
-        { path: "/documents", name: "Dokumentumok", icon: "fa-light fa-book text-black", key: "documents" },
+        { path: "/documents", name: "Dokumentumok", icon: "fa-light fa-file text-black", key: "documents" },
+        { path: "/flight-log", name: "Fedélzeti naplók", icon: "fa-light fa-books text-black", key: "flight-log" },
         { path: "/announcements", name: "Közlemények", icon: "fa-light fa-bullhorn text-black", key: "announcements" },
         ...(isDispatcher
           ? [{ path: "/new-dispatch", name: "Új riasztás", icon: "fa-light fa-light-emergency-on text-black", key: "new-dispatch" }]
@@ -87,10 +88,10 @@ function Nav() {
   }, []);
 
   return (
-    <div className="relative h-full border-r-2 border-lightgray px-5 py-3 min-w-[16%] overflow-hidden" onMouseLeave={() => setHoverIndex(null)}>
+    <div className="relative h-full border-r-2 border-lightgray px-5 py-1 min-w-[16%] overflow-auto" onMouseLeave={() => setHoverIndex(null)}>
       {/* animated background */}
       <div
-        className={`absolute left-5 w-68 mt-[17px] bg-lightgray rounded-md z-0 ${transitionEnabled ? "transition-all duration-300 ease-in-out" : ""}`}
+        className={`absolute left-5 w-68 mt-[9px] bg-lightgray rounded-md z-0 ${transitionEnabled ? "transition-all duration-300 ease-in-out" : ""}`}
         style={{
           top: indicatorStyle.top,
           height: indicatorStyle.height - 10,
