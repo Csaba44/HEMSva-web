@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -7,6 +7,7 @@
   --color-darkgray: #999b9b;
   --color-darkest: #7d7f85;
   --color-lightest: #fafafc;
+  --color-docred: #965464;
 }
 
 @layer components {
@@ -57,4 +58,38 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+.arial {
+  font-family: Arial, Helvetica, sans-serif !important;
+  color: #965464;
+}
+
+.arial * {
+  font-family: Arial, Helvetica, sans-serif !important;
+  color: #965464;
+}
+
+.caveat {
+  font-family: "Caveat", cursive !important;
+  font-optical-sizing: auto;
+  font-weight: bold;
+  font-style: normal;
+  color: #002b59;
+}
+
+th {
+  font-weight: normal;
+}
+
+.border-r-dashed {
+  border-right-style: dashed !important;
+}
+
+.border-r-solid {
+  border-right-style: solid !important;
+}
+
+.border-b-solid {
+  border-bottom-style: solid !important;
 }

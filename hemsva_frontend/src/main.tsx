@@ -7,6 +7,7 @@ import Login from "./pages/Login.tsx";
 import Stats from "./pages/Stats.tsx";
 import Home from "./pages/Home.tsx";
 import Flights from "./pages/Flights.tsx";
+import FlightLog from "./pages/FlightLog.tsx";
 
 const Placeholder = ({ name }: { name: string }) => <div className="flex items-center justify-center h-screen text-2xl font-semibold">{name}</div>;
 
@@ -26,6 +27,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/repositioning" element={<Placeholder name="Repositioning" />} />
 
         {/* OPS */}
+        <Route path="/flight-log" element={<FlightLog />} />
         <Route path="/documents" element={<Placeholder name="Documents" />} />
         <Route path="/announcements" element={<Placeholder name="Announcements" />} />
         <Route path="/new-dispatch" element={<Placeholder name="New Dispatch" />} />
