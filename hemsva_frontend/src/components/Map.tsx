@@ -1,7 +1,16 @@
 import maplibregl, { Map as MapLibreMap, Marker, Popup } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import echo from "../config/echo";
+
+type AircraftData = {
+  callsign: string;
+  latitude: number;
+  longitude: number;
+  altitude: number;
+  userName: string;
+};
 
 function Map() {
   const mapContainer = useRef<HTMLDivElement | null>(null);
@@ -11,15 +20,69 @@ function Map() {
   const lat = 47.09829570596985;
   const zoom = 6;
 
-  const coordinates: [number, number][] = [
-    [19.114170942353756, 47.51254498706376],
-    [20.839732035945318, 48.10417950616453],
-    [21.521635500726514, 47.54381605565194],
-    [17.88074170160117, 46.96574674953112],
-    [17.18461760549211, 46.717529550828736],
-    [17.408254346672333, 46.5937780568027],
-    [19.31813985576398, 46.995975761761805],
-  ];
+  const [activeAircraft, setActiveAircraft] = useState<AircraftData[]>([]);
+
+  useEffect(() => {
+    // Subscribe to the aircraft-tracking channel
+    const channel = echo.channel("aircraft-tracking");
+
+    // Listen for location updates
+    channel.listen(".location.updated", (event: any) => {
+      console.log("Location update received:", event);
+
+      const newAircraft: AircraftData = {
+        callsign: event.callsign,
+        latitude: event.latitude,
+        longitude: event.longitude,
+        altitude: event.altitude,
+        userName: event.userName,
+      };
+
+      setActiveAircraft(prevAircraft => {
+        const existingIndex = prevAircraft.findIndex(aircraft => aircraft.callsign === newAircraft.callsign);
+        
+        if (existingIndex !== -1) {
+          // Update existing aircraft
+          const updated = [...prevAircraft];
+          updated[existingIndex] = newAircraft;
+          return updated;
+        } else {
+          return [...prevAircraft, newAircraft];
+        }
+      });
+    });
+
+    // Listen for disconnections
+    channel.listen(".location.user-disconnect", (event: any) => {
+      console.log("Aircraft disconnected:", event);
+
+      setActiveAircraft(prevAircraft => prevAircraft.filter(aircraft => aircraft.callsign !== event.aircraftId));
+    });
+
+    // Cleanup on unmount
+    return () => {
+      echo.leaveChannel("aircraft-tracking");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    // Remove old markers
+    markersRef.current.forEach(m => m.remove());
+    markersRef.current = [];
+
+    // Add new markers
+    activeAircraft.forEach(ac => {
+      const el = renderHeliElement(ac.callsign);
+      const popupContent = renderPopupContent(ac.userName);
+      const popup = new Popup({ offset: 30 }).setDOMContent(popupContent);
+
+      const marker = new Marker({ element: el, anchor: "bottom" }).setLngLat([ac.longitude, ac.latitude]).setPopup(popup).addTo(map.current!);
+
+      markersRef.current.push(marker);
+    });
+  }, [activeAircraft]);
 
   function renderHeliElement(callsign: string) {
     const el = document.createElement("div");
@@ -35,14 +98,14 @@ function Map() {
     return el;
   }
 
-  function renderPopupContent(callsign: string, lat: number, lng: number) {
+  function renderPopupContent(userName: string) {
     const popupDiv = document.createElement("div");
     const root = createRoot(popupDiv);
 
     root.render(
       <div className="flex gap-2 items-center justify-center outline-none">
         <i className="fa-classic fa-solid fa-user-pilot"></i>
-        <p>Pilóta: Csörgő Csaba</p>
+        <p>Pilóta: {userName}</p>
       </div>
     );
 
@@ -58,28 +121,6 @@ function Map() {
       center: [lng, lat],
       zoom,
     });
-
-    map.current.on("load", () => {
-      coordinates.forEach((coord, i) => {
-        const callsign = `MEDIC ${i + 1}`;
-        const [hlng, hlat] = coord;
-
-        const el = renderHeliElement(callsign);
-        const popupContent = renderPopupContent(callsign, hlat, hlng);
-        const popup = new Popup({ offset: 30 }).setDOMContent(popupContent);
-
-        const marker = new Marker({ element: el, anchor: "bottom" }).setLngLat([hlng, hlat]).setPopup(popup).addTo(map.current!);
-
-        markersRef.current.push(marker);
-      });
-    });
-
-    return () => {
-      markersRef.current.forEach(m => m.remove());
-      markersRef.current = [];
-      map.current?.remove();
-      map.current = null;
-    };
   }, [lng, lat, zoom]);
 
   return (
