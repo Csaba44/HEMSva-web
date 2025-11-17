@@ -26,6 +26,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'base_id'
     ];
 
 
@@ -51,5 +52,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+    public function announcements() {
+        return $this->hasMany(Announcement::class);
+    }
+    public function base() {
+        return $this->belongsTo(Base::class);
     }
 }
