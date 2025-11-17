@@ -28,20 +28,7 @@ class User extends Authenticatable
         'password',
     ];
 
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class);
-    }
 
-    public function bookings(): HasMany
-    {
-        return $this->hasMany(Booking::class);
-    }
-
-    public function handledBookings(): HasMany
-    {
-        return $this->hasMany(Booking::class, 'handled_by');
-    }
 
     /**
      * The attributes that should be hidden for serialization.
