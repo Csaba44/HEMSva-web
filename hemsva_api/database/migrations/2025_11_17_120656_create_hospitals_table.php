@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('hospitals', function (Blueprint $table) {
             $table->id();
+            $table->string("name");
+            $table->string("icao_code")->nullable();
+            $table->string("msfs_ident");
+            $table->string("xplane_ident");
             $table->timestamps();
         });
     }

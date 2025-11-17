@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('transport_flights', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("base_id")->constrained();
+            $table->foreignId("from_hospital_id")->constrained("hospitals", "id");
+            $table->foreignId("to_hospital_id")->constrained("hospitals", "id");
+            $table->string("description");
+            $table->bigInteger("reward_points");
             $table->timestamps();
         });
     }

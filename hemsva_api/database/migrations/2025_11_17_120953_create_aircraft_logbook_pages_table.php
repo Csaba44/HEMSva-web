@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('aircraft_logbook_pages', function (Blueprint $table) {
             $table->id();
+            $table->string("aircraft_registration");
+            $table->foreign("aircraft_registration")->references("registration")->on("aircraft");
+            $table->string("reg_mark");
+            $table->string("type_variant");
+            $table->string("pilot_name");
+            $table->string("preflight_name_initials");
+            $table->string("preflight_time");
+            $table->string("aircraft_operational_signature");
             $table->timestamps();
         });
     }

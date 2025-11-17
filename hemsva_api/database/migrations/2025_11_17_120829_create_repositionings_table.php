@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('repositionings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("from_base_id")->constrained("bases", "id");
+            $table->foreignId("to_base_id")->constrained("bases", "id");
+            $table->string("description");
+            $table->bigInteger("reward_points");
             $table->timestamps();
         });
     }
