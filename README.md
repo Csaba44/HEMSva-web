@@ -1,3 +1,4 @@
+!https://i.imgur.com/bUQ0Y6q.png[Logo]
 # HEMS Hungary Virtual
 A HEMS Hungary Virtual projekt célja, hogy a Magyar Légimentő Nonprofit Kft. együttműködésében megvalósítsa a légimentők repülési üzemeinek realisztikus szimulációját, mindenki számára elérhető szimulációs platformokon. Az alkalmazás egy webes valamint egy asztali alkalmazásból áll, ez a repository a webes felület megvalósítására, és az API elkészítésére használatos.
 
