@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('missions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("base_id")->constrained();
+            $table->string("location_name");
             $table->double("latitude");
             $table->double("longitude");
-            $table->foreignId("to_hospital_id")->references("id")->on("hospitals");
-            $table->text("description")->nullable();
+            $table->string("vitals");
+            $table->foreignId("diagnosis_type_id")->constrained();
+            $table->string("description");
             $table->integer("reward_points");
             $table->timestamps();
         });

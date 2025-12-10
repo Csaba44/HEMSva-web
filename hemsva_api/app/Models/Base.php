@@ -3,37 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Base extends Model
 {
     protected $fillable = [
-        'name',
-        'icao_code',
+        "name",
+        "icao_code",
+        "msfs_ident",
+        "xplane_ident"
     ];
-
-    public function trasportFlights(): HasMany
-    {
-        return $this->hasMany(Transport_Flight::class);
+    public function users() {
+        return $this->hasMany(User::class);
     }
-
-    public function missions(): HasMany
-    {
-        return $this->hasMany(Mission::class);
+    public function hospitals() {
+        return $this->belongsToMany(Hospital::class);
     }
-
-    public function fromBaseRepositionings(): HasMany
-    {
-        return $this->hasMany(Repositioning::class, 'from_base_id');
-    }
-
-    public function toBaseRepositionings(): HasMany
-    {
-        return $this->hasMany(Repositioning::class, 'to_base_id');
-    }
-
-    public function aircrafts(): HasMany
-    {
-        return $this->hasMany(Aircraft::class);
+    public function missions() {
+        return $this->belongsToMany(Mission::class);
     }
 }

@@ -2,28 +2,38 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Hospital extends Model
 {
     protected $fillable = [
-        'name',
-        'icao_code',
+        "name",
+        "icao_code",
+        "msfs_ident",
+        "xplane_ident"
     ];
 
-    public function fromHospitalTransportFligths(): HasMany
+    public function bases()
     {
-        return $this->hasMany(Transport_Flight::class, 'from_hospital_id');
+        return $this->belongsToMany(Base::class);
     }
 
-    public function toHospitalTransportFligths(): HasMany
+    public function diagnoses()
     {
-        return $this->hasMany(Transport_Flight::class, 'to_hospital_id');
+        return $this->belongsToMany(DiagnosisType::class);
     }
 
-    public function toHospitalMission(): HasMany
+    public function inboundFlights()
     {
-        return $this->hasMany(Mission::class, 'to_hospital_id');
+        return $this->hasMany(TransportFlight::class, 'to_hospital_id');
     }
+    public function outboundFlights()
+    {
+        return $this->hasMany(TransportFlight::class, 'from_hospital_id');
+    }
+    //lehet mukodik, de nem tudom hogy van e ra szukseg
+    // public function allFlights() {
+    //     return $this->outboundFlights()->union($this->outboundFlights());
+    // }
 }

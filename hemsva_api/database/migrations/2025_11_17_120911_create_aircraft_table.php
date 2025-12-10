@@ -13,12 +13,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('aircraft', function (Blueprint $table) {
-            $table->id();
-            $table->string('registration', 6);
-            $table->string('type_designator', 4);
-            $table->foreignId('base_id')->constrained();
-            $table->enum('status', array_column(AircraftStatus::cases(), 'value'));
-            $table->text("comment")->nullable();
+            $table->string("registration")->primary();
+            $table->string("type_designator");
+            $table->foreignId("base_id")->constrained();
+            $table->double("engine-hours");
+            $table->enum("status", ["Active", "Inactive", "Maintenance"]);
+            $table->string("comment");
             $table->timestamps();
         });
     }

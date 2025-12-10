@@ -13,15 +13,10 @@ return new class extends Migration
     {
         Schema::create('repositionings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('from_base_id');
-
-            $table->foreign('from_base_id')->references('id')->on('bases');
-
-            $table->unsignedBigInteger('to_base_id');
-            $table->foreign('to_base_id')->references('id')->on('bases');
-
-            $table->text('description')->nullable();
-            $table->integer('reward_points');
+            $table->foreignId("from_base_id")->constrained("bases", "id");
+            $table->foreignId("to_base_id")->constrained("bases", "id");
+            $table->string("description");
+            $table->bigInteger("reward_points");
             $table->timestamps();
         });
     }

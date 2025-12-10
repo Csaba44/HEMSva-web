@@ -3,31 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Mission extends Model
 {
     protected $fillable = [
-        'base_id',
-        'latitude',
-        'longitude',
-        'to_hospital_id',
-        'description',
-        'reward_points',
+        "location_name",
+        "latitude",
+        "longitude",
+        "vitals",
+        "diagnosis_type_id",
+        "description",
+        "reward_points"
     ];
 
-    public function base(): BelongsTo
-    {
-        return $this->belongsTo(Base::class);
-    }
-
-    public function toHospital(): BelongsTo
-    {
-        return $this->belongsTo(Hospital::class, 'to_hospital_id');
-    }
-
-    public function bookings()
-    {
-        return $this->morphMany(Booking::class, 'flight');
+    public function bases() {
+        return $this->belongsToMany(Base::class);
     }
 }
