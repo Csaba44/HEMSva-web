@@ -13,7 +13,7 @@ class AircraftController extends Controller
      */
     public function index()
     {
-        return AircraftResource::collection(Aircraft::all());
+
     }
 
     /**
