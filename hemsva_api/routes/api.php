@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AircraftController;
 use App\Http\Controllers\AircraftLocationController;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\UserAuthController;
@@ -18,6 +19,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get("/bases", [BaseController::class, "index"]);
     Route::post("/bases", [BaseController::class, "store"]);
+
+    Route::get("/aircraft", [AircraftController::class, "index"]);
+    Route::post("/aircraft", [AircraftController::class, "store"]);
 
     Route::put('/logger/location', [AircraftLocationController::class, 'update']);
     Route::delete('/logger/location', [AircraftLocationController::class, 'disconnect']);

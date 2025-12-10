@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string("registration")->primary();
             $table->string("type_designator");
             $table->foreignId("base_id")->constrained();
-            $table->double("engine-hours");
-            $table->enum("status", ["Active", "Inactive", "Maintenance"]);
-            $table->string("comment");
+            $table->double("engine_hours")->default(0);
+            $table->enum("status", AircraftStatus::cases());
+            $table->string("comment")->nullable();
             $table->timestamps();
         });
     }

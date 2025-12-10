@@ -44,7 +44,7 @@ class BaseController extends Controller
 
         $base = Base::create($validated);
 
-        return response()->json(["message" => "Base created", "base" => $base], 201);
+        return response()->json(["message" => "A bázis sikeresen hozzáadva", "base" => $base], 201);
     }
 
     /**

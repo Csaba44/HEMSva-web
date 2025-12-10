@@ -37,7 +37,7 @@ class UserAuthController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'User Created',
+            'message' => 'Regisztráció sikeres',
             'user' => $user
         ], 201);
     }
@@ -63,7 +63,7 @@ class UserAuthController extends Controller
         $user = User::where('email', $loginUserData['email'])->first();
         if (! $user || ! Hash::check($loginUserData['password'], $user->password)) {
             return response()->json([
-                'message' => 'Invalid Credentials',
+                'message' => 'Helytelen bejelenktezési adatok',
             ], 401);
         }
         $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
