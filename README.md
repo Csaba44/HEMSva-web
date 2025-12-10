@@ -24,18 +24,23 @@ cd HEMSva-web
 ```
 Készítse el a .env.example másolatát .env néven a gyökérkönyvtárban
 
-#### FRONTEND .env
+#### FRONTEND
 Készítse el a hemsva_frontend/.env.example másolatát .env néven
 Maptiler api key: https://cloud.maptiler.com/account/keys/
+```
+cd hemsva_api
+composer install
+```
 
-#### API .env
+#### API
 Készítse el a hemsva_api/.env.example másolatát .env néven
 ```
 cd hemsva_api
-php artisan key:generate
+npm install
 ```
 
 #### Futtatás
 ```
-docker-compose up --build
+docker-compose up -d
+docker exec -it hemsva_api php artisan key:generate
 ```
