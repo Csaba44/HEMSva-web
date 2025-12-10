@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('diagnosis_types', function (Blueprint $table) {
             $table->id();
-            $table->string("description");
+            $table->text("description");
             $table->timestamps();
         });
     }

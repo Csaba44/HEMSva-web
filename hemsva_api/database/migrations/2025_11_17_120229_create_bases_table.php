@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('bases', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->string("icao_code")->nullable();
-            $table->string("msfs_ident");
-            $table->string("xplane_ident");
+            $table->string("icao_code", 4)->nullable();
+            $table->string("msfs_ident", 10);
+            $table->string("xplane_ident", 10);
             $table->timestamps();
         });
     }

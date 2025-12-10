@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\FlightCharactEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('aircraft_logbook_page_entries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('aircraft_logbook_page_id'); 
+            $table->foreignId('aircraft_logbook_page_id')->constrained(); 
             $table->string('crew_pic_initials', 3)->nullable();
             $table->string('crew_hemstc_initials', 3)->nullable();
             $table->string('crew_medp_initials', 3)->nullable();
             $table->integer('planning_time')->nullable();
-            $table->enum('flight_charact', ['C', 'C/A', 'G', 'G/M', 'G/T', 'G/F', 'HC', 'HO'])->nullable();
+            $table->enum('flight_charact', FlightCharactEnum::cases())->nullable();
             $table->string('from')->nullable();
             $table->string('to')->nullable();
             $table->time('flt_time_utc_takeoff')->nullable();

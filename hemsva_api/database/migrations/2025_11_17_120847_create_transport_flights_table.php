@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId("base_id")->constrained();
             $table->foreignId("from_hospital_id")->constrained("hospitals", "id");
             $table->foreignId("to_hospital_id")->constrained("hospitals", "id");
-            $table->string("description");
-            $table->bigInteger("reward_points");
+            $table->text("description");
+            $table->integer("reward_points");
             $table->timestamps();
         });
     }

@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string("aircraft_registration");
             $table->foreign("aircraft_registration")->references("registration")->on("aircraft");
-            $table->string("reg_mark");
+            $table->string("reg_mark", 3);
             $table->string("type_variant");
             $table->string("pilot_name");
-            $table->string("preflight_name_initials");
-            $table->string("preflight_time");
+            $table->string("preflight_name_initials", 3);
+            $table->string("preflight_time", 4);
             $table->string("aircraft_operational_signature");
             $table->timestamps();
         });

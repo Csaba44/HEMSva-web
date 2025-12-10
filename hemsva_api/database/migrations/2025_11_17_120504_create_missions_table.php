@@ -18,7 +18,7 @@ return new class extends Migration
             $table->double("longitude");
             $table->string("vitals");
             $table->foreignId("diagnosis_type_id")->constrained();
-            $table->string("description");
+            $table->text("description");
             $table->integer("reward_points");
             $table->timestamps();
         });
